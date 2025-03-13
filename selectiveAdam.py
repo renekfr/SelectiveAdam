@@ -9,11 +9,11 @@ class SelectiveAdam(torch.optim.Optimizer):
 
     def step(self, visibility=None):
         for group in self.param_groups:
+            assert len(group["params"]) == 1, "more than one tensor in group"
+            
             lr = group["lr"]
             eps = group["eps"]
             beta1, beta2 = group["betas"]
-
-            assert len(group["params"]) == 1, "more than one tensor in group"
             param = group["params"][0]
             if param.grad is None:
                 continue
@@ -36,6 +36,8 @@ class SelectiveAdam(torch.optim.Optimizer):
                 mask = visibility.bool()
 
             grad = param.grad[mask]
+            if group["weight_decay"] != 0:
+                grad = grad + group["weight_decay"] * param.data[mask]
 
             exp_avg[mask] = beta1 * exp_avg[mask] + (1 - beta1) * grad
             exp_avg_sq[mask] = beta2 * exp_avg_sq[mask] + (1 - beta2) * grad * grad
