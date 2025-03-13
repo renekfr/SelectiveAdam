@@ -1,6 +1,6 @@
-# SelectiveAdam
+# Selective Adam
 
-SelectiveAdam is an optimizer based on Adam that enables selective parameter updates by applying a visibility mask to the gradients. Initially designed for 3DGS, it can be used in any project that requires targeted parameter updates.
+Selective Adam is an optimizer based on Adam that enables selective parameter updates by applying a visibility mask to the gradients. Initially designed for 3DGS, it can be used in any project that requires targeted parameter updates.
 
 ## Features
 
