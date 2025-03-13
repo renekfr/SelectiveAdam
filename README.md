@@ -31,5 +31,5 @@ cd SelectiveAdam
 ## Discussion
 
 I did some test and lost a bit of PSNR / SSIM using selective Adam.
-Ie. A fix will be done soon! 
+Ie. A fix is maybe needed?
 
