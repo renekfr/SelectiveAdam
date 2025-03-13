@@ -4,7 +4,7 @@ SelectiveAdam is an optimizer based on Adam that enables selective parameter upd
 
 ## Features
 
-- **Selective Update**: Only the portions of the parameters corresponding to "visible" positions (as defined by a mask) are updated.
+- **Selective Update**: Only the portions of the parameters corresponding to "visibility" (as defined by a mask) are updated. Either all parameters are updated!
 - **Adam-Inspired**: Leverages adaptive learning rates through exponential moving averages and bias corrections.
 - **Easy Integration**: Built to work seamlessly with PyTorch, making it simple to integrate into your projects.
 - **Open Source**: Distributed under the MIT license, you are free to use and modify it as needed.
@@ -18,17 +18,18 @@ git clone https://github.com/renekfr/SelectiveAdam.git
 cd SelectiveAdam
 ```
 
-## Discussion
-
-I did some test and lost a bit of PSNR / SSIM using selective Adam and not Adam.
-I do believe i have a small fix to do!
-
 ## Results
 
-Adam - 7K Iteration
+### Adam - 7K Iteration - Truck
 💡SSIM    :  0.854
 💡PSNR    : 25.227
 
-Selective Adam - 7K Iteration
+### Selective Adam - 7K Iteration - Truck
 💡SSIM    :  0.850
 💡PSNR    : 25.111
+
+## Discussion
+
+I did some test and lost a bit of PSNR / SSIM using selective Adam.
+Ie. A fix will be done soon! 
+
