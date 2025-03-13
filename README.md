@@ -16,3 +16,19 @@ Clone this repository to your local machine:
 ```bash
 git clone https://github.com/renekfr/SelectiveAdam.git
 cd SelectiveAdam
+```
+
+## Discussion
+
+I did some test and lost a bit of PSNR / SSIM using selective Adam and not Adam.
+I do believe i have a small fix to do!
+
+## Results
+
+Adam - 7K Iteration
+💡SSIM    :  0.854
+💡PSNR    : 25.227
+
+Selective Adam - 7K Iteration
+💡SSIM    :  0.850
+💡PSNR    : 25.111
