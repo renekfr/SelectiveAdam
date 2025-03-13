@@ -15,9 +15,4 @@ Clone this repository to your local machine:
 
 ```bash
 git clone https://github.com/renekfr/SelectiveAdam.git
-cd SelectiveAdam```
-
-<!---
-renekfr/renekfr is a ✨ special ✨ repository because its `README.md` (this file) appears on your GitHub profile.
-You can click the Preview link to take a look at your changes.
---->
+cd SelectiveAdam
