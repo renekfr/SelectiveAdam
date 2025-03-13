@@ -19,12 +19,12 @@ cd SelectiveAdam
 ```
 
 ## Results
-
-### Adam - 7K Iteration - Truck
+### 3DGD-7K Iter - Truck Dataset
+#### Adam
 💡SSIM    :  0.854
 💡PSNR    : 25.227
 
-### Selective Adam - 7K Iteration - Truck
+#### Selective Adam
 💡SSIM    :  0.850
 💡PSNR    : 25.111
 
