@@ -7,8 +7,7 @@ class SelectiveAdam(torch.optim.Optimizer):
         defaults = dict(lr=lr, betas=betas, eps=eps, weight_decay=weight_decay)
         super().__init__(params, defaults)
 
-    def step(self, visibility):
-        N = visibility.numel()
+    def step(self, visibility=None):
         for group in self.param_groups:
             lr = group["lr"]
             eps = group["eps"]
@@ -31,15 +30,19 @@ class SelectiveAdam(torch.optim.Optimizer):
             state["step"] += 1
             step = state["step"]
 
-            mask = visibility.bool()
+            if visibility is None:
+                mask = torch.ones_like(param, dtype=torch.bool)
+            else:
+                mask = visibility.bool()
+
             grad = param.grad[mask]
 
             exp_avg[mask] = beta1 * exp_avg[mask] + (1 - beta1) * grad
             exp_avg_sq[mask] = beta2 * exp_avg_sq[mask] + (1 - beta2) * grad * grad
 
-            bias_correction1 = 1 - beta1 ** step
-            bias_correction2 = 1 - beta2 ** step
-            step_size = lr * (bias_correction2 ** 0.5) / bias_correction1
+            bias_1 = 1 - beta1 ** step
+            bias_2 = 1 - beta2 ** step
+            step_size = lr * (bias_2 ** 0.5) / bias_1
 
             denom = exp_avg_sq[mask].sqrt().add_(eps)
             update = exp_avg[mask] / denom
