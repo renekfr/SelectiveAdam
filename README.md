@@ -19,7 +19,7 @@ cd SelectiveAdam
 ```
 
 ## Results
-### 3DGD-7K Iter - Truck Dataset
+### 3DGS Ray Tracer | 7K Iter | Truck Dataset
 #### Adam
 💡SSIM    :  0.854
 💡PSNR    : 25.227
