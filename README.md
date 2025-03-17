@@ -33,3 +33,5 @@ cd SelectiveAdam
 I did some test and lost a bit of PSNR / SSIM using selective Adam.
 I believe that it must come from my visibility mask, not the optimizer.
 
+An other point could be the convergence which could be slower at first, so more test will be done soon! :)
+
