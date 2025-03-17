@@ -19,17 +19,17 @@ cd SelectiveAdam
 ```
 
 ## Results
-### 3DGS Ray Tracer | 7K Iter | Truck Dataset
+### 3DGS Ray Tracer | 7K Iter | Truck Dataset | 1 M Splats
 #### Adam
-💡SSIM    :  0.854
-💡PSNR    : 25.227
+💡SSIM    : 0.855
+💡PSNR    : 25.20
 
 #### Selective Adam
-💡SSIM    :  0.850
-💡PSNR    : 25.111
+💡SSIM    : 0.848
+💡PSNR    : 24.99
 
 ## Discussion
 
 I did some test and lost a bit of PSNR / SSIM using selective Adam.
-Ie. A fix is maybe needed?
+I believe that it must come from my visibility mask, not the optimizer.
 
