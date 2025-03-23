@@ -25,6 +25,13 @@ pip install -r requirements.txt
 - 📄 **License**
   MIT — free to use, modify, and integrate into personal or commercial projects.
 
+---
+
+- ⚠️ **Limits**
+  This optimizer doesn't support closure.
+  It doesn't support "closure" or non zero gradient updates.
+  Please refer to pytorch [Adam](https://pytorch.org/docs/stable/generated/torch.optim.Adam.html).
+
 ## Results
 ### 3DGS Ray Tracer | 7K Iter | Truck Dataset | 1 M Splats
 #### Adam
@@ -36,6 +43,7 @@ pip install -r requirements.txt
 💡PSNR    : 24.99
 
 ## Discussion
+
 🏗️ This custom optimizer is still in development — expect changes.
-Let me know if you want to add badges (PyTorch version, Triton version, etc.).
+Let me know if you want to add badges (PyTorch version, Triton version, etc.) or changes you would add in this implementation.
 
