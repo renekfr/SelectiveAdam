@@ -40,7 +40,7 @@ optimizer.step(visibility_mask=visibility_mask)
 
 ---
 
-##⚠️ **Limits**
+## ⚠️ Limits
   
 This custom optimizer does not support closure.
 The visibility mask should be of shape [N].
