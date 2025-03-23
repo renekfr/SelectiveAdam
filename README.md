@@ -1,22 +1,29 @@
-# Selective Adam
+# Selective Adam (with Triton acceleration)
 
-Selective Adam is an optimizer based on Adam that enables selective parameter updates by applying a visibility mask to the gradients. Initially designed for 3DGS, it can be used in any project that requires targeted parameter updates.
+`SelectiveAdam` is a custom optimizer based on Adam, designed to **update only visible parameters** using a visibility mask. It leverages [Triton](https://github.com/openai/triton) to accelerate selective updates directly on the GPU, making it especially useful for dynamic scenarios like **3D Gaussian Splatting** or **sparse visibility in ray tracing**.
 
-## Features
-
-- **Selective Update**: Only the portions of the parameters corresponding to "visibility" (as defined by a mask) are updated. Either all parameters are updated!
-- **Adam-Inspired**: Leverages adaptive learning rates through exponential moving averages and bias corrections.
-- **Easy Integration**: Built to work seamlessly with PyTorch, making it simple to integrate into your projects.
-- **Open Source**: Distributed under the MIT license, you are free to use and modify it as needed.
+---
 
 ## Installation
-
-Clone this repository to your local machine:
 
 ```bash
 git clone https://github.com/renekfr/SelectiveAdam.git
 cd SelectiveAdam
+pip install -r requirements.txt
 ```
+
+---
+
+## 🚀 Features
+
+- 🎯 **Selective Updates**  
+  Only updates parameters with non-zero gradients or defined by a visibility mask, keeping optimizer state consistent.
+
+- ⚡ **Triton-Accelerated**  
+  Uses a single compiled Triton kernel for all input sizes — avoids recompilation and runs fast on GPU.
+
+- 📄 **License**
+  MIT — free to use, modify, and integrate into personal or commercial projects.
 
 ## Results
 ### 3DGS Ray Tracer | 7K Iter | Truck Dataset | 1 M Splats
@@ -29,9 +36,6 @@ cd SelectiveAdam
 💡PSNR    : 24.99
 
 ## Discussion
-
-I did some test and lost a bit of PSNR / SSIM using selective Adam.
-I believe that it must come from my visibility mask, not the optimizer.
-
-An other point could be the convergence which could be slower at first, so more test will be done soon! :)
+🏗️ This custom optimizer is still in development — expect changes.
+Let me know if you want to add badges (PyTorch version, Triton version, etc.).
 
