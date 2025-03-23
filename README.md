@@ -14,6 +14,17 @@ pip install -r requirements.txt
 
 ---
 
+## Usage
+
+The `visibility_mask` must be of shape `[N]`.
+If not provided, a default mask is computed based on non-zero gradients — which is kinda nice 🙂
+
+```python
+optimizer = SelectiveAdam(params, eps=1e-15, betas=(0.9, 0.999))
+optimizer.zero_grad()
+optimizer.step(visibility_mask=visibility_mask)
+```
+
 ## 🚀 Features
 
 - 🎯 **Selective Updates**  
@@ -28,18 +39,22 @@ pip install -r requirements.txt
 ---
 
 - ⚠️ **Limits**
-  This custom optimizer doesn't support "closure" or non zero gradient updates.
-  Please refer to pytorch [Adam](https://pytorch.org/docs/stable/generated/torch.optim.Adam.html).
+  
+This custom optimizer does not support closure.
+The visibility mask should be of shape [N].
+If no mask is provided, only gradients strictly different from zero will be updated — others will remain unchanged.
+  
+For a standard implementation, refer to [Adam](https://pytorch.org/docs/stable/generated/torch.optim.Adam.html).
 
 ## Results
-### 3DGS Ray Tracer | 7K Iter | Truck Dataset | 1 M Splats
+### 3DGS Ray Tracer | 7K Iter | Truck Dataset
 #### Adam
 💡SSIM    : 0.855
 💡PSNR    : 25.20
 
 #### Selective Adam
-💡SSIM    : 0.848
-💡PSNR    : 24.99
+💡SSIM    : 0.857
+💡PSNR    : 25.19
 
 ## Discussion
 
