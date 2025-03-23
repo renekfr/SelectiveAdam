@@ -4,6 +4,19 @@
 
 ---
 
+## 🚀 Features
+
+- 🎯 **Selective Updates**  
+  Only updates parameters with non-zero gradients or defined by a visibility mask, keeping optimizer state consistent.
+
+- ⚡ **Triton-Accelerated**  
+  Uses a single compiled Triton kernel for all input sizes — avoids recompilation and runs fast on GPU.
+
+- 📄 **License**
+  MIT — free to use, modify, and integrate into personal or commercial projects.
+
+---
+
 ## Installation
 
 ```bash
@@ -25,20 +38,9 @@ optimizer.zero_grad()
 optimizer.step(visibility_mask=visibility_mask)
 ```
 
-## 🚀 Features
-
-- 🎯 **Selective Updates**  
-  Only updates parameters with non-zero gradients or defined by a visibility mask, keeping optimizer state consistent.
-
-- ⚡ **Triton-Accelerated**  
-  Uses a single compiled Triton kernel for all input sizes — avoids recompilation and runs fast on GPU.
-
-- 📄 **License**
-  MIT — free to use, modify, and integrate into personal or commercial projects.
-
 ---
 
-- ⚠️ **Limits**
+##⚠️ **Limits**
   
 This custom optimizer does not support closure.
 The visibility mask should be of shape [N].
