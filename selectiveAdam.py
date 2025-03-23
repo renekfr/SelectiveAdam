@@ -9,17 +9,17 @@ def selective_adam_kernel(
     exp_avg_ptr,
     exp_avg_sq_ptr,
     mask_ptr,
-    n_elements,
+    N,
     step_size,
     beta1, beta2,
-    one_minus_beta1, one_minus_beta2,
+    _beta1, _beta2,
     eps,
     weight_decay,
     BLOCK_SIZE: tl.constexpr
 ):
     pid = tl.program_id(0)
     offsets = pid * BLOCK_SIZE + tl.arange(0, BLOCK_SIZE)
-    offset_mask = offsets < n_elements
+    offset_mask = offsets < N
 
     mask = tl.load(mask_ptr + offsets, mask=offset_mask, other=0)
     param = tl.load(param_ptr + offsets, mask=offset_mask)
@@ -30,8 +30,8 @@ def selective_adam_kernel(
     if weight_decay > 0:
         grad = tl.where(mask, grad + weight_decay * param, grad)
 
-    new_exp_avg = tl.where(mask, beta1 * exp_avg + one_minus_beta1 * grad, exp_avg)
-    new_exp_avg_sq = tl.where(mask, beta2 * exp_avg_sq + one_minus_beta2 * grad * grad, exp_avg_sq)
+    new_exp_avg = tl.where(mask, beta1 * exp_avg + _beta1 * grad, exp_avg)
+    new_exp_avg_sq = tl.where(mask, beta2 * exp_avg_sq + _beta2 * grad * grad, exp_avg_sq)
 
     update = new_exp_avg / (tl.sqrt(new_exp_avg_sq) + eps)
     new_param = tl.where(mask, param - step_size * update, param)
@@ -40,27 +40,27 @@ def selective_adam_kernel(
     tl.store(exp_avg_sq_ptr + offsets, new_exp_avg_sq, mask=offset_mask)
     tl.store(param_ptr + offsets, new_param, mask=offset_mask)
 
+def selective_adam_step_triton(param, grad, exp_avg, exp_avg_sq, mask, step, lr, beta1, beta2, eps, weight_decay):   
+    N = param.numel()
 
-def selective_adam_step_triton(param, grad, exp_avg, exp_avg_sq, mask, step, lr, beta1, beta2, eps, weight_decay):
-    n_elements = param.numel()
+    bias1 = 1 - beta1 ** step
+    bias2 = 1 - beta2 ** step
+    step_size = lr * (bias2 ** 0.5) / bias1
+
+    _beta1 = 1 - beta1
+    _beta2 = 1 - beta2
     
-    bias_correction1 = 1 - beta1 ** step
-    bias_correction2 = 1 - beta2 ** step
-    step_size = lr * (bias_correction2 ** 0.5) / bias_correction1
-    one_minus_beta1 = 1 - beta1
-    one_minus_beta2 = 1 - beta2
-    
-    param_flat = param.view(-1)
-    grad_flat = grad.view(-1)
-    exp_avg_flat = exp_avg.view(-1)
-    exp_avg_sq_flat = exp_avg_sq.view(-1)
+    param_flat = param.contiguous().view(-1)
+    grad_flat = grad.contiguous().view(-1)
+    exp_avg_flat = exp_avg.contiguous().view(-1)
+    exp_avg_sq_flat = exp_avg_sq.contiguous().view(-1)
     mask_flat = mask.unsqueeze(1).expand_as(param).contiguous().view(-1).to(torch.uint8)
 
     BLOCK_SIZE = 1024
-    grid = lambda meta: (triton.cdiv(n_elements, meta['BLOCK_SIZE']),)
+    grid = lambda meta: (triton.cdiv(N, meta['BLOCK_SIZE']),)
     selective_adam_kernel[grid](
         param_flat, grad_flat, exp_avg_flat, exp_avg_sq_flat, mask_flat,
-        n_elements, step_size, beta1, beta2, one_minus_beta1, one_minus_beta2, eps, weight_decay,
+        N, step_size, beta1, beta2, _beta1, _beta2, eps, weight_decay,
         BLOCK_SIZE=BLOCK_SIZE
     )
 
@@ -69,41 +69,35 @@ class SelectiveAdam(torch.optim.Optimizer):
         defaults = dict(lr=lr, betas=betas, eps=eps, weight_decay=weight_decay)
         super().__init__(params, defaults)
     
-    def step(self, closure=None, visibility_mask=None):
+    def step(self, visibility_mask=None):
         mask = visibility_mask
+
         for group in self.param_groups:
-            assert len(group["params"]) == 1, "Chaque groupe doit contenir un seul tenseur."
+            assert len(group["params"]) == 1, "[SelectiveAdam]: Each group must contain a single tensor."
             param = group["params"][0]
             if param.grad is None:
                 continue
 
             state = self.state[param]
-
-            lr = group["lr"]
-            eps = group["eps"]
-            beta1, beta2 = group["betas"]
-
-            state = self.state[param]
-            if not state:
+            if "exp_avg" not in state:
                 state["step"] = 0
                 state["exp_avg"] = torch.zeros_like(param, memory_format=torch.preserve_format)
                 state["exp_avg_sq"] = torch.zeros_like(param, memory_format=torch.preserve_format)
             
+            if visibility_mask is None:
+                mask = (torch.abs(param.grad) > 0).any(dim=1)
+
             state["step"] += 1
             step = state["step"]
             
-            if visibility_mask is None:
-                mask = (torch.abs(param.grad) > eps).any(dim=1)
-            
             selective_adam_step_triton(
-                param, param.grad, 
+                param.data, param.grad, 
                 state["exp_avg"], state["exp_avg_sq"], 
                 mask, 
                 step, 
-                lr, 
-                beta1, 
-                beta2, 
-                eps, 
+                group["lr"], 
+                group["betas"][0], group["betas"][1],
+                group["eps"], 
                 group["weight_decay"]
             )
 
