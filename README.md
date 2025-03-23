@@ -49,17 +49,21 @@ If no mask is provided, only gradients strictly different from zero will be upda
 For a standard implementation, refer to [Adam](https://pytorch.org/docs/stable/generated/torch.optim.Adam.html).
 
 ## Results
-### 3DGS Ray Tracer | 7K Iter | Truck Dataset
+
+### 3DGS 0Ray Tracer (Ours) | 7K Iter | Truck Dataset | 1.75M Splats
 #### Adam
-💡SSIM    : 0.855
-💡PSNR    : 25.20
+💡SSIM    : 0.8656
+💡PSNR    : 25.295
 
 #### Selective Adam
-💡SSIM    : 0.857
-💡PSNR    : 25.19
+💡SSIM    : 0.8634
+💡PSNR    : 25.325
 
+Yep... results are kinda the same!
 ## Discussion
 
-🏗️ This custom optimizer is still in development — expect changes.
-Let me know if you want to add badges (PyTorch version, Triton version, etc.) or changes you would add in this implementation.
+This custom optimizer is still in development — expect changes.
+Let me know if you would add changes in this implementation.
+
+I really wish I had found an implementation like this on GitHub. so I hope it helps some of you out there!
 
