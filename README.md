@@ -28,8 +28,7 @@ pip install -r requirements.txt
 ---
 
 - ⚠️ **Limits**
-  This optimizer doesn't support closure.
-  It doesn't support "closure" or non zero gradient updates.
+  This custom optimizer doesn't support "closure" or non zero gradient updates.
   Please refer to pytorch [Adam](https://pytorch.org/docs/stable/generated/torch.optim.Adam.html).
 
 ## Results
