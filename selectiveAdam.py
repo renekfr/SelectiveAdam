@@ -63,7 +63,7 @@ def selective_adam_step_triton(param, grad, exp_avg, exp_avg_sq, mask, step, lr,
         BLOCK_SIZE=BLOCK_SIZE
     )
 
-class TritonSelectiveAdam(torch.optim.Optimizer):
+class SelectiveAdam(torch.optim.Optimizer):
     def __init__(self, params, lr=1e-3, betas=(0.9, 0.999), eps=1e-8, weight_decay=0):
         defaults = dict(lr=lr, betas=betas, eps=eps, weight_decay=weight_decay)
         super().__init__(params, defaults)
