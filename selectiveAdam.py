@@ -65,8 +65,8 @@ class SelectiveAdam(torch.optim.Optimizer):
     
     def step(self, visibility_mask=None):
         mask = None
-        if visibility_mask:
-            mask = visibility_mask.to(torch.uint8)
+        if visibility_mask is not None:
+            mask = visibility_mask
             
         for group in self.param_groups:
             assert len(group["params"]) == 1, "[SelectiveAdam]: Each group must contain a single tensor."
@@ -81,13 +81,13 @@ class SelectiveAdam(torch.optim.Optimizer):
                 state["exp_avg_sq"] = torch.zeros_like(param, memory_format=torch.preserve_format)
 
             if visibility_mask is None:
-                mask = (torch.abs(param.grad) > 0).any(dim=1).to(torch.uint8)
+                mask = (torch.abs(param.grad) > 0).any(dim=1)
 
             state["step"] += 1
             selective_adam_step_triton(
                 param.data, param.grad, 
                 state["exp_avg"], state["exp_avg_sq"], 
-                mask, 
+                mask.to(torch.uint8), 
                 state["step"], 
                 group["lr"], 
                 group["betas"][0], group["betas"][1],
