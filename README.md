@@ -1,4 +1,4 @@
-# Selective Adam (with Triton acceleration) v0
+# Selective Adam (with Triton acceleration) v0.1
 
 `SelectiveAdam` is a custom optimizer based on pytorch [Adam](https://pytorch.org/docs/stable/generated/torch.optim.Adam.html). It is designed to **update only visible parameters** using a visibility mask. It leverages [Triton](https://github.com/openai/triton) to accelerate selective updates directly on the GPU, making it especially useful for dynamic scenarios like **3D Gaussian Splatting**.
 
@@ -37,14 +37,22 @@ For a standard implementation, refer to [Adam](https://pytorch.org/docs/stable/g
 
 ## Results
 
-### 3DGS 0Ray Tracer (Ours) | 7K Iter | Truck Dataset | 1.75M Splats
-#### Adam
-💡SSIM    : 0.8656
-💡PSNR    : 25.295
 
-#### Selective Adam
-💡SSIM    : 0.8639
-💡PSNR    : 25.384
+### 3DGS Ray Tracer (Ours) | 7K Iter | Truck Dataset | 2M Splats
+#### Selective Adam (Ours)
+💡SSIM    :  0.860
+💡PSNR    : 25.390
+⌛Time    :  05:15
+
+### Adam
+💡SSIM    :  0.857
+💡PSNR    : 25.209
+⌛Time    :  05:48
+
+#### Gsplat Adam
+💡SSIM    :  0.851
+💡PSNR    : 25.060
+⌛Time    :   6:47
 
 ## Discussion
 
