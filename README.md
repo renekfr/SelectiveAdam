@@ -42,12 +42,12 @@ For a standard implementation, refer to [Adam](https://pytorch.org/docs/stable/g
 #### Selective Adam (Ours)
 💡SSIM    :  0.860
 💡PSNR    : 25.390
-⌛Time    :  05:15
+⌛Time    :   5:15
 
 ### Adam
 💡SSIM    :  0.857
 💡PSNR    : 25.209
-⌛Time    :  05:48
+⌛Time    :   5:48
 
 #### Gsplat Adam
 💡SSIM    :  0.851
